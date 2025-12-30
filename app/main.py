@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 import crud, schemas
 from database import get_db
@@ -17,14 +17,19 @@ def agregar_producto(producto: schemas.ProductoCreate, db: Session = Depends(get
 
 @app.put("/productos/{id}", response_model=schemas.ProductoCreate)
 def actualizar_producto(producto_id: int, datos: schemas.ProductoCreate, db:Session = Depends(get_db)):
-    producto = crud.actualizar_producto(db, producto_id, datos)
-    if not producto:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return producto
+    return crud.actualizar_producto(db, producto_id, datos)
 
 @app.delete("/productos/{id}")
 def eliminar_producto(producto_id = int, db:Session = Depends(get_db)):
-    producto = crud.eliminar_producto(db, producto_id)
-    if not producto:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return {"mensaje": "Producto Eliminado"}
+    crud.eliminar_producto(db, producto_id)
+    return {"mensaje":"Producto eliminado correctamente"}
+   
+# Categorias
+
+@app.get("/categorias", response_model=list[schemas.CategoriaResponse])
+def listar_categorias(db:Session = Depends(get_db)):
+    return crud.obtener_categorias(db)
+
+@app.post("/categorias", response_model=schemas.CategoriaCreate)
+def agregar_categoria(categoria: schemas.CategoriaCreate, db:Session = Depends(get_db)):
+    return crud.crear_categoria(db, categoria)

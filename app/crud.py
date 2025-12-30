@@ -1,12 +1,13 @@
 from sqlalchemy.orm import Session
 from models import Producto, Categoria
 from schemas import ProductoCreate, CategoriaCreate
+from fastapi import HTTPException
 
 def crear_producto(db:Session, producto:ProductoCreate):
     db_producto = Producto(**producto.model_dump())
     db.add(db_producto)
     db.commit()
-    db.refresh()
+    db.refresh(db_producto)
     return db_producto
 
 def obtener_productos(db:Session):
@@ -18,19 +19,26 @@ def obtener_producto(db:Session, producto_id: int):
 def actualizar_producto(db:Session, producto_id: int, datos:ProductoCreate):
     producto = obtener_producto(db, producto_id)
 
-    if producto:
-        for key, value in datos.model_dump().items():
-            setattr(producto, key, value)
-        db.commit()
-        db.refresh(producto)
+    if not producto:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+    
+    for key, value in datos.model_dump(exclude_unset=True).items():
+        setattr(producto, key, value)
+
+    db.commit()
+    db.refresh(producto)
+    return producto
 
 def eliminar_producto(db:Session, producto_id: int):
     producto = obtener_producto(db, producto_id)
 
+    if not producto:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+
     if producto:
         db.delete(producto)
         db.commit()
-    return producto
+    return True
 
 # Categoría
 
