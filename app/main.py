@@ -33,3 +33,12 @@ def listar_categorias(db:Session = Depends(get_db)):
 @app.post("/categorias", response_model=schemas.CategoriaCreate)
 def agregar_categoria(categoria: schemas.CategoriaCreate, db:Session = Depends(get_db)):
     return crud.crear_categoria(db, categoria)
+
+@app.put("/categorias/{id}", response_model=schemas.CategoriaCreate)
+def actualizar_categoria(categoria_id: int, datos: schemas.CategoriaCreate , db:Session = Depends(get_db)):
+    return crud.actualizar_categoria(db, categoria_id, datos)
+
+@app.delete("/categorias/{id}")
+def eliminar_categoria(categoria_id: int, db:Session = Depends(get_db)):
+    crud.eliminar_categoria(db, categoria_id)
+    return {"mensaje":"Categoria eliminada correctamente"}
