@@ -2,3 +2,8 @@ fastapi==0.125.0
 uvicorn==0.38.0
 SQLAlchemy==2.0.45
 psycopg2-binary==2.9.11
+passlib[bcrypt]==1.7.4
+bcrypt==3.2.2
+python-jose[cryptography]==3.5.0
+python-multipart==0.0.21
+email-validator==2.3.0
