@@ -1,13 +1,19 @@
+from db.database import SessionmLocal
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status
 from jose import JWTError
 from sqlalchemy.orm import Session
-from database import SessionmLocal, get_db
-from auth import verificar_token
-import crud
+from core.security import verificar_token
+from crud.usuario import *
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
+def get_db():
+    db = SessionmLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 def get_current_user(
         token: str = Depends(oauth2_scheme),
@@ -27,11 +33,10 @@ def get_current_user(
     except JWTError:
         raise cred_exc
     
-    user = crud.obtener_usuario_por_email(db, email)
+    user = obtener_usuario_por_email(db, email)
     if user is None:
         raise cred_exc
     return user
-
 
 def require_admin(current_user = Depends(get_current_user)):
     if not current_user.es_admin:
