@@ -1,5 +1,5 @@
 from logging.config import fileConfig
-from models import producto, categoria, usuario
+import models
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from db.database import Base
