@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from core.security import verificar_token
 from crud.usuario import *
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 def get_db():
     db = SessionmLocal()

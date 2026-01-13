@@ -3,6 +3,7 @@ from pydantic import BaseModel, ConfigDict
 class ProductoCreate(BaseModel):
     nombre: str
     precio: float
+    stock: int
     en_stock: bool
     categoria_id: int
 
