@@ -11,3 +11,4 @@ python-jose[cryptography]==3.5.0
 python-multipart==0.0.21
 email-validator==2.3.0
 alembic==1.17.2
+pytest==9.0.2
